@@ -44,6 +44,9 @@ parser.add_argument('--save', type=str,  default='model.pt',
 parser.add_argument('--gpuid' , type=int, default=0,
 					help='gpuid')
 
+parser.add_argument('--flag' , type=str, default="",
+                    help='flag')
+
 args = parser.parse_args()
 
 # Set the random seed manually for reproducibility.
@@ -59,7 +62,7 @@ if torch.cuda.is_available():
 # Load data
 ###############################################################################
 
-corpus = data.Corpus(args.data)
+corpus = data.Corpus(args.data, flag = args.flag)
 
 def batchify(data, bsz):
     # Work out how cleanly we can divide the dataset into bsz parts.

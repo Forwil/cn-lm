@@ -39,21 +39,21 @@ class Dictionary(object):
 
 
 class Corpus(object):
-    def __init__(self, path):
+    def __init__(self, path, phase = "Train", flag = ""):
         self.dictionary = Dictionary()
-        if len(path) == 0 or path[0] == "_":
-            self.dictionary.from_json(path)
+        if phase == "Train":
+            print "init train.txt"
+            self.train = self.tokenize(os.path.join(path, 'train.txt'))
+            print "init valid.txt"
+            self.valid = self.tokenize(os.path.join(path, 'valid.txt'))
+            print "init test.txt"
+            self.test = self.tokenize(os.path.join(path, 'test.txt'))
+            self.dictionary.to_json(flag)
+        else:
+            self.dictionary.from_json(flag)
             return
 #        return  
        # print "res from"
-        print "init train.txt"
-        self.train = self.tokenize(os.path.join(path, 'train.txt'))
-        print "init valid.txt"
-        self.valid = self.tokenize(os.path.join(path, 'valid.txt'))
-        print "init test.txt"
-        self.test = self.tokenize(os.path.join(path, 'test.txt'))
-        self.dictionary.to_json("_r")
-
     def tokenize(self, path):
         """Tokenizes a text file."""
         assert os.path.exists(path)
