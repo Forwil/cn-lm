@@ -20,6 +20,8 @@ parser.add_argument('--data', type=str, default="",
                     help='aft of table')
 parser.add_argument('--checkpoint', type=str, default='./model.pt',
                     help='model checkpoint to use')
+parser.add_argument('--checkpoint2', type=str, default='./model.pt',
+                    help='model checkpoint2 to use')
 parser.add_argument('--outf', type=str, default='generated.txt',
                     help='output file for generated text')
 parser.add_argument('--words', type=int, default='1000',
@@ -51,7 +53,7 @@ if args.temperature < 1e-3:
 
 with open(args.checkpoint, 'rb') as f:
     model = torch.load(f)
-with open("all_book_big_re.pt", 'rb') as f:
+with open(args.checkpoint2, 'rb') as f:
     model_rev = torch.load(f)
 
 model.eval()
@@ -64,8 +66,8 @@ else:
     model.cpu()
     model_rev.cpu()
 
-corpus = data.Corpus(args.data)
-corpus_rev = data.Corpus("_r")
+corpus = data.Corpus(phase = "Test",flag = "all_book")
+corpus_rev = data.Corpus(phase = "Test ",flag = "all_book_re")
 
 ntokens = len(corpus.dictionary)
 ntokens_rev = len(corpus_rev.dictionary)

@@ -39,7 +39,7 @@ class Dictionary(object):
 
 
 class Corpus(object):
-    def __init__(self, path, phase = "Train", flag = ""):
+    def __init__(self, path = "", phase = "Train", flag = ""):
         self.dictionary = Dictionary()
         if phase == "Train":
             print "init train.txt"
