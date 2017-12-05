@@ -1,3 +1,7 @@
+# 中文RNN语言模型
+基于pytorch example定制的中文语言模型训练脚本
+可输出sighan中文纠错任务的评测输入
+
 # Word-level language modeling RNN
 
 This example trains a multi-layer RNN (Elman, GRU, or LSTM) on a language modeling task.
@@ -10,7 +14,7 @@ python main.py --cuda --epochs 6 --tied # Train a tied LSTM on PTB with CUDA, re
 python main.py --cuda --tied            # Train a tied LSTM on PTB with CUDA for 40 epochs, reaching perplexity of 87.17
 python generate.py                      # Generate samples from the trained LSTM model.
 ```
-
+ 3
 The model uses the `nn.RNN` module (and its sister modules `nn.GRU` and `nn.LSTM`)
 which will automatically use the cuDNN backend if run on CUDA with cuDNN installed.
 
