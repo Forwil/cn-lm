@@ -1,0 +1,238 @@
+<html lang="zh-cn">
+  <head>
+    <title>Chinese Spell Check</title>
+    <meta charset="utf-8">
+    <style>
+        #content
+        {
+            background-color: #FFFAFA;
+            resize:none;
+            border:1px solid #D1D1D1;
+            width:80%;
+            height:35%;
+            position: relative;
+            top:40px;
+            left:30px;
+            margin-left:auto;
+            margin-right:auto;
+            border-radius: 10px;
+            font-size:11pt;
+           -webkit-border-radius: 10px;
+           -moz-border-radius: 10px;
+        }
+        #alert
+        {
+            position: relative;
+            top:0px;
+            left:200px;
+        }
+        body
+        {
+            background-color: #FFFFFF;
+        }
+        #submit{
+            margin: 50 auto auto auto;
+            background: #FFE7BA;
+            border-radius: 10px;
+            border: 1px solid black;
+            width: 100px;
+            height: 20px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        #submit:hover{
+            background: #FFE74A;
+            cursor: hand;
+        }
+        #img
+        {
+            position: relative;
+            right:0px;
+            top:40px;
+            border-radius: 6px;
+            max-width:140px;
+        }
+        #note
+        {
+            background-color:#FFFFFF;
+            font-size: 11pt;
+            position: relative;
+            top:40px;
+            margin-left:auto;
+            margin-right:auto;
+            width:400px;
+            height:100px;
+            padding: 1% 1% 1% 1%;
+            border:2px dotted #000000;
+            border-radius: 15px;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+        }
+        #alert
+        {
+            background-color: #FFFFFF;
+            padding: 1% 1% 1% 1%;
+            position: relative;
+            top:30px;
+            width:400px;
+            border:1px dotted #003355;
+            border-radius: 15px;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+        }
+        #body
+        {
+            background-color: #FFFFFF;
+            font-family: "SimSun";
+            font-size: 12pt;
+            margin-left:auto;
+            margin-right:auto;
+            margin-top: 20px;
+            padding: 1% 1% 1% 5%;
+            width: 800px;
+            height: 800px;
+            line-height: 100%;
+            border-radius: 15px;
+            border:2px solid #000000;
+        }
+        #weather
+        {
+            text-align:center;
+            margin:0 auto;
+        }
+        #result
+        {
+            background-color: #FFFAFA;
+            resize:none;
+            border:1px solid #D1D1D1;
+            width:80%;
+            height:35%;
+            position: relative;
+            top:40px;
+            left:30px;
+            margin: 1% 1% 1% 1%;
+            font-size:11pt;
+        }
+        table{
+            background-color: #FFFFFF;
+            border-collapse:collapse;
+            display: none;
+        }
+        .obj
+        {
+            width: 30px;
+            height: 20px;
+            display: inline-block;
+            text-align:center;
+            z-index：1;
+        }
+        .obj:hover table{
+            display: block;
+        }
+        td {
+            background-color: #FFFFFF;
+            font-size: 9pt;
+            border:1px solid #add9c0;
+            position:relative;
+            z-index：1000;
+        }
+    </style>
+  </head>
+    <body>
+      <div id="body">
+        <div id="main">
+          <form action="/" method="POST">
+                <textarea id="content" name="content" placeholder="" maxlength="180">我想考试时，大家都是稠眉苦脸，一点也不觉得快乐，但是当你认真苦读，凭借著自己的实力拿到高分，一种快乐是无法用言语来表达的。整个人欣喜若狂、喜上眉梢，这一种努力换来的快乐是最棒的。当你在家玩电脑好不容易破了记绿也都是快乐，快乐就像空气一样无所不在。</textarea>
+                <div  id="submit" onclick = "check()" href="" >
+                      提交  
+                </div>
+          </form>
+        </div>
+        <div id = "result">
+        </div>
+      </div>
+    </div> 
+  </body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript"> 
+    var getItemColors = function(colorLevel) { 
+      var colors= []; 
+      //默认的最深颜色 
+      var red = 255,green = 0, blue = 0; 
+      //最浅颜色是239,239,239 比如：最浅颜色的red是 239 则差值为239-134=105 
+      var maxRed = 255,maxGreen = 255,maxBlue = 255; 
+      var level = colorLevel; 
+      while(level--) { 
+        colors.push( 'rgb('+red +','+green+','+blue+')'); 
+        red += parseInt(maxRed/colorLevel); 
+        green += parseInt(maxGreen/colorLevel); 
+        blue += parseInt(maxBlue/colorLevel); 
+      } 
+      return colors; 
+    } 
+    fun_succ = function(v){
+        var x = JSON.parse(v);
+        var show = Array();
+        var maxl = 6;
+        var color_table = getItemColors(maxl);
+        var vtable = document.getElementById("result");
+        vtable.innerHTML = "";
+        for(i in x){
+            var row = document.createElement("div");
+            for(j in x[i]){
+              var obj = document.createElement("div");
+              obj.setAttribute("class","obj");
+              obj.innerHTML = x[i][j]["name"];
+              var prob = Math.sqrt(x[i][j]["prob"][0] * x[i][j]["prob"][1]);
+              var level = Math.max(Math.log(prob)/ Math.log(0.1) - 1, 0);
+              obj.style.backgroundColor = color_table[maxl - parseInt(level)];
+              var table = document.createElement("table");
+              var tr = table.insertRow(table.rows.length);
+              var td = tr.insertCell(tr.cells.length);
+              td.innerHTML = "正向概率:" + x[i][j]["prob"][0].toFixed(5) ;
+              td = tr.insertCell(tr.cells.length);
+              td.innerHTML += "反向概率:" + x[i][j]["prob"][1].toFixed(5);
+              for(t in x[i][j]["top"]){
+                if (t > 10){
+                    break;
+                }
+                var tr = table.insertRow(table.rows.length);
+                var td = tr.insertCell(tr.cells.length);
+                td.innerHTML = x[i][j]["top"][t][0];
+                td = tr.insertCell(tr.cells.length);
+                td.innerHTML = x[i][j]["top"][t][1].toFixed(5);
+              }
+              obj.appendChild(table);
+              row.appendChild(obj);
+            }
+            row.setAttribute("class","row");
+            vtable.appendChild(row);
+        }
+    }
+    check = function(){
+        var ajaxObj = null;
+        if(window.XMLHttpRequest){
+            ajaxObj = new XMLHttpRequest();
+        }else if(window.ActiveXObject){
+            ajaxObj = new ActiveXObject('Microsoft.XMLHTTP');//
+        }else{
+            throw new Error('no ajax object available.');
+        }
+        ajaxObj.onreadystatechange = function(){
+            if(ajaxObj.readyState == 4){
+                if(ajaxObj.status == 200){
+                    fun_succ(ajaxObj.responseText);//
+                }else{
+                    if(funFaild){
+                        funFaild();//funFaild是获取失败时处理的函数
+                    }
+                }
+            }
+        };
+        ajaxObj.open('POST',"check", true);
+        ajaxObj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
+        ajaxObj.send("content=" + document.getElementById("content").value);
+      }
+</script>
+</html>
